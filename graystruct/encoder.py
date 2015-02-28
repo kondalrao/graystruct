@@ -22,8 +22,6 @@ STANDARD_GELF_KEYS = (
     'full_message',
     'timestamp',
     'level',
-    'line',
-    'file',
 )
 
 
@@ -52,6 +50,7 @@ class GelfJsonEncoder(object):
         }
 
     def __call__(self, logger, method_name, event_dict):
+        event_dict = event_dict.copy()
         levelno = _NAME_TO_LEVEL[method_name]
 
         gelf_dict = {
@@ -59,13 +58,15 @@ class GelfJsonEncoder(object):
             'host': self.host,
             'level': SYSLOG_LEVELS.get(levelno, levelno),
         }
+
         if 'message' in event_dict:
-            message = event_dict['short_message'] = event_dict.pop('message')
+            message = gelf_dict['short_message'] = event_dict.pop('message')
         else:
-            message = ''
+            message = gelf_dict['short_message'] = event_dict.pop('event', '')
+
         if 'exception' in event_dict:
             exc = event_dict.pop('exception')
-            event_dict['full_message'] = '\n'.join([message, exc])
+            gelf_dict['full_message'] = '\n'.join([message, exc])
 
         gelf_dict['_pid'] = os.getpid()
         gelf_dict['_logger'] = logger.name
