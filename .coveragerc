@@ -5,6 +5,7 @@ source = graystruct
 [report]
 omit =
     *tests*
+    graystruct/_version.py
 
 # Regexes for lines to exclude from consideration
 exclude_lines =

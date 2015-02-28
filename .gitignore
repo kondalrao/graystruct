@@ -2,3 +2,5 @@
 *.pyc
 /graystruct/_version.py
 /graystruct.egg-info
+/htmlcov
+/.coverage
