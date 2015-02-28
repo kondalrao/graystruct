@@ -31,7 +31,7 @@ def _get_gelf_compatible_key(key):
     return '_{}'.format(key)
 
 
-class GelfJsonEncoder(object):
+class GELFEncoder(object):
     def __init__(self, fqdn=True, localname=None,
                  gelf_keys=STANDARD_GELF_KEYS):
         if fqdn:

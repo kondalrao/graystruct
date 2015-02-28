@@ -13,7 +13,7 @@ import unittest
 
 from mock import patch
 
-from ..encoder import _get_gelf_compatible_key, GelfJsonEncoder
+from ..encoder import _get_gelf_compatible_key, GELFEncoder
 
 
 class TestBasic(unittest.TestCase):
@@ -50,7 +50,7 @@ class TestBasic(unittest.TestCase):
         answer = 42
         swallow = 'european'
 
-        encoder = GelfJsonEncoder(fqdn=False, localname=host)
+        encoder = GELFEncoder(fqdn=False, localname=host)
         event_dict = {
             'line': line,
             'file': __file__,
@@ -97,7 +97,7 @@ class TestBasic(unittest.TestCase):
         log_method_name = 'warning'
         event = 'event'
 
-        encoder = GelfJsonEncoder()
+        encoder = GELFEncoder()
         event_dict = {
             'event': event,
         }
@@ -132,7 +132,7 @@ class TestBasic(unittest.TestCase):
         log_method_name = 'warning'
         event = 'event'
 
-        encoder = GelfJsonEncoder(fqdn=False)
+        encoder = GELFEncoder(fqdn=False)
         event_dict = {
             'event': event,
         }
@@ -165,7 +165,7 @@ class TestBasic(unittest.TestCase):
         event = 'answered a question'
         exception = 'Traceback\nValueError'
 
-        encoder = GelfJsonEncoder(fqdn=False, localname=host)
+        encoder = GELFEncoder(fqdn=False, localname=host)
         event_dict = {
             'event': event,
             'exception': exception,
