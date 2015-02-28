@@ -1,0 +1,15 @@
+language: python
+
+sudo: false
+
+python:
+  - 2.7
+  - 3.4
+
+install:
+  - pip install -r test_requirements.txt
+  - pip install .
+
+script:
+  - coverage run -m haas -v
+  - coverage report -m
