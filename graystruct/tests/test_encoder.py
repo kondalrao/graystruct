@@ -156,3 +156,38 @@ class TestBasic(unittest.TestCase):
         self.assertEqual(initial_event_dict, event_dict)
         new_event_dict = json.loads(event_json)
         self.assertEqual(new_event_dict, expected)
+
+    def test_gelf_json_encoder_with_exc_info(self):
+        # Given
+        logger = logging.getLogger(__name__)
+        log_method_name = 'warning'
+        host = 'my_host'
+        event = 'answered a question'
+        exception = 'Traceback\nValueError'
+
+        encoder = GelfJsonEncoder(fqdn=False, localname=host)
+        event_dict = {
+            'event': event,
+            'exception': exception,
+        }
+        initial_event_dict = event_dict.copy()
+
+        expected = {
+            'version': '1.1',
+            'host': host,
+            'short_message': event,
+            'full_message': event + '\n' + exception,
+            'level': 4,  # syslog warning
+            '_pid': os.getpid(),
+            '_level_name': log_method_name.upper(),
+            '_logger': logger.name,
+        }
+
+        # When
+        event_json = encoder(logger, log_method_name, initial_event_dict)
+
+        # Then
+        # Event_dict is not mutated
+        self.assertEqual(initial_event_dict, event_dict)
+        new_event_dict = json.loads(event_json)
+        self.assertEqual(new_event_dict, expected)
