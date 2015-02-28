@@ -13,7 +13,7 @@ from graypy.handler import GELFHandler as BaseGELFHandler
 
 class _CompressHandler(object):
     def makePickle(self, record):
-        return zlib.compress(record.msg.encode('urf-8'))
+        return zlib.compress(record.msg.encode('utf-8'))
 
 
 class GELFHandler(_CompressHandler, BaseGELFHandler):
