@@ -11,6 +11,8 @@ import json
 import logging
 import unittest
 
+from mock import patch
+
 from ..encoder import _get_gelf_compatible_key, GelfJsonEncoder
 
 
@@ -71,6 +73,76 @@ class TestBasic(unittest.TestCase):
             '_user': user,
             '_answer': answer,
             '_swallow': swallow,
+            '_pid': os.getpid(),
+            '_level_name': log_method_name.upper(),
+            '_logger': logger.name,
+        }
+
+        # When
+        event_json = encoder(logger, log_method_name, initial_event_dict)
+
+        # Then
+        # Event_dict is not mutated
+        self.assertEqual(initial_event_dict, event_dict)
+        new_event_dict = json.loads(event_json)
+        self.assertEqual(new_event_dict, expected)
+
+    @patch('socket.getfqdn')
+    def test_gelf_json_encoder_fqdn(self, getfqdn):
+        # Given
+        host = 'my_host'
+        getfqdn.return_value = host
+
+        logger = logging.getLogger(__name__)
+        log_method_name = 'warning'
+        event = 'event'
+
+        encoder = GelfJsonEncoder()
+        event_dict = {
+            'event': event,
+        }
+        initial_event_dict = event_dict.copy()
+
+        expected = {
+            'version': '1.1',
+            'host': host,
+            'short_message': event,
+            'level': 4,  # syslog warning
+            '_pid': os.getpid(),
+            '_level_name': log_method_name.upper(),
+            '_logger': logger.name,
+        }
+
+        # When
+        event_json = encoder(logger, log_method_name, initial_event_dict)
+
+        # Then
+        # Event_dict is not mutated
+        self.assertEqual(initial_event_dict, event_dict)
+        new_event_dict = json.loads(event_json)
+        self.assertEqual(new_event_dict, expected)
+
+    @patch('socket.gethostname')
+    def test_gelf_json_encoder_hostname(self, gethostname):
+        # Given
+        host = 'my_host'
+        gethostname.return_value = host
+
+        logger = logging.getLogger(__name__)
+        log_method_name = 'warning'
+        event = 'event'
+
+        encoder = GelfJsonEncoder(fqdn=False)
+        event_dict = {
+            'event': event,
+        }
+        initial_event_dict = event_dict.copy()
+
+        expected = {
+            'version': '1.1',
+            'host': host,
+            'short_message': event,
+            'level': 4,  # syslog warning
             '_pid': os.getpid(),
             '_level_name': log_method_name.upper(),
             '_logger': logger.name,
