@@ -59,10 +59,7 @@ class GelfJsonEncoder(object):
             'level': SYSLOG_LEVELS.get(levelno, levelno),
         }
 
-        if 'message' in event_dict:
-            message = gelf_dict['short_message'] = event_dict.pop('message')
-        else:
-            message = gelf_dict['short_message'] = event_dict.pop('event', '')
+        message = gelf_dict['short_message'] = event_dict.pop('event', '')
 
         if 'exception' in event_dict:
             exc = event_dict.pop('exception')
