@@ -14,7 +14,7 @@ MAJOR = 0
 MINOR = 1
 MICRO = 1
 
-IS_RELEASED = False
+IS_RELEASED = True
 
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
@@ -39,27 +39,27 @@ def git_version():
 
     def _fallback():
         try:
-            out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
-            git_revision = out.strip().decode('ascii')
-        except OSError:
-            git_revision = "Unknown"
-
-        try:
             out = _minimal_ext_cmd(['git', 'rev-list', '--count', 'HEAD'])
             git_count = out.strip().decode('ascii')
         except OSError:
             git_count = '0'
-        return git_count, git_revision
+        return git_count
 
     try:
-        out = _minimal_ext_cmd(['git', 'describe'])
+        out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
+        git_revision = out.strip().decode('ascii')
+    except OSError:
+        git_revision = "Unknown"
+
+    try:
+        out = _minimal_ext_cmd(['git', 'describe', '--long'])
         out = out.strip().decode('ascii')
         if len(out) == 0:
-            return _fallback()
-        last_tag, git_count, git_revision = out.split('-')
+            git_count = _fallback()
+        else:
+            last_tag, git_count, _ = out.split('-')
     except OSError:
-        git_revision = 'Unknown'
-        git_revision = '0'
+        git_count = '0'
 
     return git_revision, git_count
 
