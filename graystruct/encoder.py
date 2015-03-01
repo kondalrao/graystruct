@@ -12,6 +12,7 @@ import json
 import socket
 
 from graypy.handler import SYSLOG_LEVELS
+from structlog.processors import JSONRenderer
 from structlog.stdlib import _NAME_TO_LEVEL
 
 
@@ -31,9 +32,9 @@ def _get_gelf_compatible_key(key):
     return '_{}'.format(key)
 
 
-class GELFEncoder(object):
+class GELFEncoder(JSONRenderer):
     def __init__(self, fqdn=True, localname=None,
-                 gelf_keys=STANDARD_GELF_KEYS):
+                 gelf_keys=STANDARD_GELF_KEYS, **dumps_kw):
         if fqdn:
             host = socket.getfqdn()
         elif localname is not None:
@@ -42,6 +43,7 @@ class GELFEncoder(object):
             host = socket.gethostname()
         self.host = host
         self.gelf_keys = frozenset(gelf_keys)
+        super(GELFEncoder, self).__init__(**dumps_kw)
 
     def _translate_non_gelf_keys(self, event_dict):
         return {
@@ -71,4 +73,5 @@ class GELFEncoder(object):
 
         gelf_dict.update(self._translate_non_gelf_keys(event_dict))
 
-        return json.dumps(gelf_dict)
+        return super(GELFEncoder, self).__call__(
+            logger, method_name, gelf_dict)
