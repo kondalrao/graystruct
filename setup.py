@@ -143,5 +143,5 @@ if __name__ == "__main__":
         license='BSD',
         packages=['graystruct'],
         install_requires=install_requires,
-        extras_require={'amqp': ['amqplib==1.0.2']},
+        extras_require={'amqp': ['amqp==1.4.6']},
     )

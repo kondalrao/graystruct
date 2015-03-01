@@ -32,6 +32,7 @@ Example
     >>> import structlog
     >>> from graystruct.encoder import GELFEncoder
     >>> from graystruct.handler import GELFHandler
+    >>> from graystruct.rabbitmq import GELFRabbitHandler
     >>> from graystruct.utils import add_app_context
     >>> structlog.configure(
     ...     logger_factory=structlog.stdlib.LoggerFactory(),
@@ -49,15 +50,19 @@ Example
     ...         # Format exception info is ``exc_info`` passed to log
     ...         structlog.processors.format_exc_info,
     ...         # Encode the message in GELF format (this must be the final processor)
-    ...         structlog.processors.GELFEncoder(),
+    ...         GELFEncoder(),
     ...     ],
     ... )
     >>> std_logger = logging.getLogger()
     >>> std_logger.setLevel(logging.WARNING)
     >>> gelf_handler = GELFHandler('localhost', 12201)
     >>> std_logger.addHandler(gelf_handler)
+    >>> rabbit_handler = GELFRabbitHandler(
+            'amqp://user:passwd@localhost/', exchange='log-exchange',
+            queue='log-queue')
+    >>> std_logger.addHandler(rabbit_handler)
     >>> logger = structlog.get_logger('some.package')
-    # Will transmit a GELF-encoded message
+    # Will transmit a GELF-encoded message directly to a graylog server and to rabbitmq
     >>> logger.error('user.login', username='sjagoe')
 
 
