@@ -26,7 +26,8 @@ class GELFRabbitHandler(_CompressHandler, SocketHandler):
     """RabbitMQ / Graylog Extended Log Format handler.
 
     This is copied from ``graypy.rabbitmq`` and modified to use py-amqp
-    (AMQP 0.9.1).  Additionally removes GELF-related options.
+    (AMQP 0.9.1).  Additionally removes GELF-related options, which are
+    handled by the :class:`graystruct.encoder.GELFEncoder` class.
 
     NOTE: this handler ingores all messages logged by amqp.
 
