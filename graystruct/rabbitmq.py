@@ -27,8 +27,8 @@ class GELFRabbitHandler(_CompressHandler, SocketHandler):
     """RabbitMQ / Graylog Extended Log Format handler.
 
     This is copied from ``graypy.rabbitmq`` and modified to use py-amqp
-    (AMQP 0.9.1).  Additionally removes GELF-related options and adds a
-    queue paramater.
+    (AMQP 0.9.1).  Additionally removes GELF-related options, which are
+    handled by the :class:`graystruct.encoder.GELFEncoder` class.
 
     NOTE: this handler ingores all messages logged by amqp.
 
@@ -36,13 +36,12 @@ class GELFRabbitHandler(_CompressHandler, SocketHandler):
     :param exchange: RabbitMQ exchange. Default 'logging.gelf'.
         A queue binding must be defined on the server to prevent
         log messages from being dropped.
-    :param queue: RabbitMQ queue to which to publish messages.
     :param exchange_type: RabbitMQ exchange type (default 'fanout').
 
     """
 
-    def __init__(self, url, exchange='logging.gelf', queue='log-messages',
-                 exchange_type='fanout', virtual_host='/'):
+    def __init__(self, url, exchange='logging.gelf', exchange_type='fanout',
+                 virtual_host='/'):
         self.url = url
         parsed = urlparse(url)
         if parsed.scheme != 'amqp':
@@ -60,25 +59,22 @@ class GELFRabbitHandler(_CompressHandler, SocketHandler):
         }
         self.exchange = exchange
         self.exchange_type = exchange_type
-        self.queue = queue
         self.virtual_host = virtual_host
         SocketHandler.__init__(self, host, port)
         self.addFilter(ExcludeFilter('amqp'))
 
     def makeSocket(self, timeout=1):
         return RabbitSocket(
-            self.cn_args, timeout, self.exchange, self.exchange_type,
-            self.queue)
+            self.cn_args, timeout, self.exchange, self.exchange_type)
 
 
 class RabbitSocket(object):
 
-    def __init__(self, cn_args, timeout, exchange, exchange_type, queue):
+    def __init__(self, cn_args, timeout, exchange, exchange_type):
         self.cn_args = cn_args
         self.timeout = timeout
         self.exchange = exchange
         self.exchange_type = exchange_type
-        self.queue = queue
         self.connection = amqp.Connection(
             connection_timeout=timeout, **self.cn_args)
         self.channel = self.connection.channel()
@@ -88,8 +84,6 @@ class RabbitSocket(object):
             durable=True,
             auto_delete=False,
         )
-        self.channel.queue_bind(
-            queue=self.queue, exchange=self.exchange)
 
     def sendall(self, data):
         msg = amqp.Message(data, delivery_mode=2)

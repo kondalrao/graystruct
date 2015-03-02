@@ -66,6 +66,16 @@ Example
     >>> logger.error('user.login', username='sjagoe')
 
 
+Notes on RabbitMQ handler
+-------------------------
+
+The ``GELFRabbitHandler`` will declare the exchange that it is
+submitting messages to.  The consumer is expected to create a queue
+binding to the exchange when receiving messages.  If the consumer does
+not, at least one queue binding should be made by the RabbitMQ server
+administrator in order for log messages to be delivered.
+
+
 .. _structlog: https://pypi.python.org/pypi/structlog
 .. _Structlog: https://pypi.python.org/pypi/structlog
 
