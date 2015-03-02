@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2015 Simon Jagoe
+# Copyright (c) 2015 Simon Jagoe and Enthought Ltd
+# Portions copyright (c) 2011, Sever Băneşiu
 # All rights reserved.
 #
 # This software may be modified and distributed under the terms
