@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2015 Simon Jagoe
+# Copyright (c) 2015 Simon Jagoe and Enthought Ltd
 # All rights reserved.
 #
 # This software may be modified and distributed under the terms
@@ -126,9 +126,9 @@ if __name__ == "__main__":
     setup(
         name='graystruct',
         version=__version__,
-        url='https://github.com/sjagoe/graystruct',
-        author='Simon Jagoe',
-        author_email='simon@simonjagoe.com',
+        url='https://github.com/enthought/graystruct',
+        author='Enthought Ltd',
+        author_email='info@enthought.com',
         classifiers=[
             'Development Status :: 1 - Planning',
             'Intended Audience :: Developers',
