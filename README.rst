@@ -44,7 +44,7 @@ Example
     ...         # Format positional args to log as in stdlib
     ...         structlog.stdlib.PositionalArgumentsFormatter(),
     ...         # Add a timestamp to log message
-    ...         structlog.processors.TimeStamper(fmt='iso', utc=True),
+    ...         structlog.processors.TimeStamper(utc=True),
     ...         # Dump stack if ``stack_info=True`` passed to log
     ...         structlog.processors.StackInfoRenderer(),
     ...         # Format exception info is ``exc_info`` passed to log
