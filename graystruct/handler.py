@@ -7,8 +7,7 @@
 from __future__ import absolute_import
 
 import zlib
-
-from graypy.handler import GELFHandler as BaseGELFHandler
+from graypy.handler import GELFHTTPHandler as BaseGELFHandler
 
 
 class _CompressHandler(object):
